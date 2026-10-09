@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Flowers</title>
+
+<style>
+    .game-row {
+        display: flex;
+    }
+
+    .game-cell {
+        margin: 3px;
+    }
+
+    .game-cell img {
+        width: 75px;
+        height: 75px;
+        object-fit: cover;
+    }
+</style>
+
+</head>
+<body>
+    <h1>Venkata Chandresh Adapa finds avians</h1>
+
+    <p>Click on the locations to find the flowers, watch out for the poison ivy</p>
+
+    <p id="locations">Number of locations checked is zero.</p>
+
+    <p id="score">Score is zero.</p>
+
+    <p>Click for help.</p>
+
+    <p id="help">Help report</p>
+
+
+<div id="game-field"></div>
+
+<script>
+    const gameField = document.getElementById("game-field");
+
+    for (let row = 0; row < 6; row++) {
+        const rowDiv = document.createElement("div");
+        rowDiv.className = "game-row";
+
+        for (let col = 0; col < 6; col++) {
+            const cell = document.createElement("div");
+            cell.className = "game-cell";
+
+            const img = document.createElement("img");
+            img.src = "images/bush.jpg";
+            img.alt = "Bush";
+
+            cell.appendChild(img);
+            rowDiv.appendChild(cell);
+        }
+
+        gameField.appendChild(rowDiv);
+    }
+</script>
+
+</body>
+</html>
