@@ -1,66 +1,168 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Find the Flowers</title>
 
-<style>
-    .game-row {
+    <style>
+      .game-row {
         display: flex;
-    }
+      }
 
-    .game-cell {
+      .game-cell {
         margin: 3px;
-    }
+      }
 
-    .game-cell img {
+      .game-cell img {
         width: 75px;
         height: 75px;
         object-fit: cover;
-    }
-</style>
-
-</head>
-<body>
+      }
+    </style>
+  </head>
+  <body>
     <h1>Venkata Chandresh Adapa finds avians</h1>
 
-    <p>Click on the locations to find the flowers, watch out for the poison ivy</p>
+    <p>
+      Click on the locations to find the flowers, watch out for the poison ivy
+    </p>
 
     <p id="locations">Number of locations checked is zero.</p>
 
     <p id="score">Score is zero.</p>
 
-    <p>Click for help.</p>
+    <p onclick="help()"">Click for help.</p>
 
     <p id="help">Help report</p>
 
+    <div id="game-field"></div>
 
-<div id="game-field"></div>
+    <script>
+          const gameField = document.getElementById("game-field");
 
-<script>
-    const gameField = document.getElementById("game-field");
+          // Array to store all 36 image IDs
+      let ids = [];
 
-    for (let row = 0; row < 6; row++) {
-        const rowDiv = document.createElement("div");
-        rowDiv.className = "game-row";
+      for (let i = 0; i < 36; i++) {
+          ids.push("img" + i);
+      }
 
-        for (let col = 0; col < 6; col++) {
-            const cell = document.createElement("div");
-            cell.className = "game-cell";
+      // Game variables
+      let score = 0;
+      let locationsVisited = 0;
+      let lastLocation = 0;
 
-            const img = document.createElement("img");
-            img.src = "images/bush.jpg";
-            img.alt = "Bush";
+      let poisonLocation = 19;
+      let roseLocation = 14;
+      let lilyLocations = [3, 25];
+      let daisyLocations = [2, 5, 11, 20, 21];
 
-            cell.appendChild(img);
-            rowDiv.appendChild(cell);
+      let gameOver = false;
+
+          for (let row = 0; row < 6; row++) {
+            const rowDiv = document.createElement("div");
+            rowDiv.className = "game-row";
+
+            for (let col = 0; col < 6; col++) {
+                const cell = document.createElement("div");
+                cell.className = "game-cell";
+
+                const img = document.createElement("img");
+                img.src = "images/bush.jpg";
+                img.alt = "Bush";
+
+                const index = row * 6 + col;
+                img.id = "img" + index;
+
+                img.onclick = function() {
+                    check(index);
+                };
+
+                cell.appendChild(img);
+                rowDiv.appendChild(cell);
+            }
+
+            gameField.appendChild(rowDiv);
         }
 
-        gameField.appendChild(rowDiv);
-    }
-</script>
+        // Keep track of flowers already scored
+        let scoredLocations = [];
 
-</body>
+        function check(position) {
+            if (gameOver) {
+                return;
+            }
+
+            const img = document.getElementById(ids[position]);
+            let points = 0;
+
+            if (position === poisonLocation) {
+                img.src = "images/poison.jpeg";
+                score -= 4;
+                gameOver = true;
+            }
+            else if (position === roseLocation) {
+                img.src = "images/rose.jpeg";
+                points = 4;
+            }
+            else if (lilyLocations.includes(position)) {
+                img.src = "images/lily.jpg";
+                points = 2;
+            }
+            else if (daisyLocations.includes(position)) {
+                img.src = "images/daisy.jpg";
+                points = 1;
+            }
+
+            // Award points only once per flower
+            if (points > 0 && !scoredLocations.includes(position)) {
+                score += points;
+                scoredLocations.push(position);
+            }
+
+            locationsVisited++;
+            lastLocation = position;
+
+            document.getElementById("locations").textContent =
+                "Number of locations checked is " + locationsVisited + ".";
+
+            document.getElementById("score").textContent =
+                "Score is " + score + ".";
+}
+
+        function help() {
+    let neighbors = [
+        (lastLocation + 1) % 36,
+        (lastLocation + 35) % 36,
+        (lastLocation + 6) % 36,
+        (lastLocation + 30) % 36
+    ];
+
+    let row = Math.floor(lastLocation / 6);
+    let col = lastLocation % 6;
+    let nearby = [];
+
+    for (let r = row - 1; r <= row + 1; r++) {
+        for (let c = col - 1; c <= col + 1; c++) {
+            if (r >= 0 && r < 6 && c >= 0 && c < 6) {
+                nearby.push(r * 6 + c);
+            }
+        }
+    }
+
+    let result = "warm";
+
+    if (neighbors.some(x => daisyLocations.includes(x))) {
+        result = "cold";
+    } else if (nearby.includes(roseLocation)) {
+        result = "hot";
+    } else if (nearby.includes(poisonLocation)) {
+        result = "watch out";
+    }
+
+    document.getElementById("help").textContent = result;
+}
+    </script>
+  </body>
 </html>
