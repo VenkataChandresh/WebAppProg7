@@ -39,6 +39,7 @@
     <button onclick="makeNewDiv()">Add end</button>
 	<button onclick="addFront()">Add front</button>
 	<button onclick="removeEveryOther()">Remove</button>
+	<button onclick="shuffle()">Shuffle</button>
 </body>
 <script>
 	function makeNewDiv() {
@@ -72,6 +73,28 @@ function addFront() {
             divListItems[i].remove();
         }
     }
+}
+
+function shuffle() {
+    let items = document.getElementsByClassName("divlist");
+
+    if (items.length < 2) return;
+
+    let a = Math.floor(Math.random() * items.length);
+    let b = Math.floor(Math.random() * items.length);
+
+    while (a === b) {
+        b = Math.floor(Math.random() * items.length);
+    }
+
+    let first = items[a];
+    let second = items[b];
+
+    let temp = document.createTextNode("");
+
+    first.replaceWith(temp);
+    second.replaceWith(first);
+    temp.replaceWith(second);
 }
 </script>
 </html>	

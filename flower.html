@@ -53,10 +53,23 @@
       let locationsVisited = 0;
       let lastLocation = 0;
 
-      let poisonLocation = 19;
-      let roseLocation = 14;
-      let lilyLocations = [3, 25];
-      let daisyLocations = [2, 5, 11, 20, 21];
+      let available = Array.from({length: 36}, (_, i) => i);
+
+      function randomLocation() {
+        let index = Math.floor(Math.random() * available.length);
+        return available.splice(index, 1)[0];
+    }
+
+       let poisonLocation = randomLocation();
+       let roseLocation = randomLocation();
+       let lilyLocations = [randomLocation(), randomLocation()];
+       let daisyLocations = [
+            randomLocation(),
+            randomLocation(),
+            randomLocation(),
+            randomLocation(),
+            randomLocation()
+    ];
 
       let gameOver = false;
 
@@ -129,7 +142,31 @@
 
             document.getElementById("score").textContent =
                 "Score is " + score + ".";
-}
+
+            if (!gameOver) {
+                moveRose(position);
+            }
+        }
+
+        function moveRose(position) {
+            let moves = [];
+
+            let row = Math.floor(roseLocation / 6);
+            let col = roseLocation % 6;
+
+            if (row > 0) moves.push(-6);
+            if (row < 5) moves.push(6);
+            if (col > 0) moves.push(-1);
+            if (col < 5) moves.push(1);
+
+            let move = moves[Math.floor(Math.random() * moves.length)];
+
+            roseLocation += move;
+
+            if (roseLocation === position) {
+                gameOver = true;
+            }
+        }
 
         function help() {
     let neighbors = [
